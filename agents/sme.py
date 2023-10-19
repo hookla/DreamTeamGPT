@@ -5,9 +5,10 @@ class SME(Agent):
     def __init__(self, name: str, expertise: str, concerns: list[str]):
         # Construct the user_prompt string
         user_prompt_list = [
-            f"Adopt the persona of the {expertise}.",
+            f"Adopt the persona of the {name}.",
+            f"Your expertise is {expertise}.",
             f"Your concerns are {', '.join(concerns)}.",
-            "You should aim to provide technical insights that align with these areas of expertise and concerns."
+            "You should aim to provide original technical insights that align with these areas of expertise and concerns. Do not repeat points that have already been made."
         ]
         user_prompt = " ".join(user_prompt_list)
 
