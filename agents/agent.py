@@ -5,8 +5,8 @@ from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv()
-api_key = os.getenv("OPENAI_API_KEY")
-openai.api_key = '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'
+api_key = os.getenv("openai.api_key")
+openai.api_key = api_key
 
 
 class Agent:
