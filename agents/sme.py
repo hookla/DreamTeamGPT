@@ -10,5 +10,5 @@ class SME(Agent):
     def opinion(self, minutes_list: list, transcript_list: list) -> str:
         minutes = " ".join(minutes_list)
         transcript = " ".join(transcript_list)
-        prompt = f"Adopt the persona of the {self.expertise}. Your concerns are {self.concerns}. Contribute to this conversation: Transcript Tail: {transcript}"
+        prompt = f"Adopt the persona of the {self.expertise}. Your concerns are {self.concerns}. You should aim to provide technical insights that align with these areas of expertise and concerns. : Transcript Tail: {transcript}"
         return self.query_gpt(prompt, 100)
