@@ -1,6 +1,11 @@
+from loguru import logger
+
 from agents.chairman import Chairman
 from agents.sme import SME
 from utils.print_with_wrap import print_with_wrap
+
+logger.disable(__name__)
+
 
 # Initialize
 
@@ -17,7 +22,7 @@ from utils.print_with_wrap import print_with_wrap
 # ]
 
 SMEs = [
-    SME("Elon Musk", "Innovation and Space Exploration", ["Sustainable Energy", "Space Colonization"]),
+    #    SME("Elon Musk", "Innovation and Space Exploration", ["Sustainable Energy", "Space Colonization"]),
     SME("Warren Buffett", "Investment and Capital Allocation", ["Value Investing", "Corporate Governance"]),
     SME("Bill Gates", "Software and Philanthropy", ["Global Health", "Education"]),
     SME("Jeff Bezos", "E-commerce and Logistics", ["Supply Chain", "Customer Experience"]),

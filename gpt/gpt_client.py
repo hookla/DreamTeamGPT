@@ -5,6 +5,8 @@ import openai
 from dotenv import load_dotenv
 from loguru import logger
 
+logger.disable(__name__)
+
 # Load environment variables from .env file
 load_dotenv()
 api_key = os.getenv("openai.api_key")
@@ -12,7 +14,7 @@ openai.api_key = api_key
 
 
 class GPTClient:
-    def __init__(self, common_instructions: str, user_prompt: str, model: str = "gpt-3.5-turbo"):
+    def __init__(self, common_instructions: str, user_prompt: str, model: str = "gpt-4"):
         self.system_instructions = common_instructions
         self.user_prompt = user_prompt
         self.model = model

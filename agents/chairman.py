@@ -3,6 +3,7 @@ from loguru import logger
 from agents.agent import Agent
 from agents.sme import SME
 
+logger.disable(__name__)
 
 class Chairman(Agent):
     def __init__(self, name: str, executives: list):
