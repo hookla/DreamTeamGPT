@@ -1,40 +1,33 @@
 from agents.chairman import Chairman
-from agents.executive import Executive
 from agents.secretary import Secretary
-from utils.pretty_print_with_wrap import pretty_print_with_wrap
-from utils.token_counter import num_tokens_from_messages
+from agents.sme import SME
+from utils.print_with_wrap import print_with_wrap
 
 # Initialize
 
 # Create a typical C-suite of executives
-executives = [
-    Executive("CEO", "Strategy", ["Growth", "Profitability"]),
-    Executive("CFO", "Finance", ["Cash Flow", "Budget"]),
-    Executive("COO", "Operations", ["Efficiency", "Productivity"]),
-    Executive("CMO", "Marketing", ["Brand", "Customer Acquisition"]),
-    Executive("CTO", "Technology", ["Innovation", "Security"])
+SMEs = [
+    SME("CEO", "Corporate Strategy", ["Market Entry", "Competitive Positioning"]),
+    SME("CFO", "Financial Products", ["Rate Management", "Regulatory Compliance"]),
+    SME("COO", "Operational Efficiency", ["Scalability", "Cost Optimization"]),
+    SME("CMO", "Customer Acquisition", ["Target Market", "Onboarding Experience"]),
+    SME("CTO", "Technical Infrastructure", ["Data Security", "System Integration"]),
+    SME("CRO", "Risk Management", ["Fraud Detection", "Compliance"]),
+    SME("CCO", "Customer Experience", ["UX/UI Design", "Customer Support"]),
+    SME("CPO", "Product Management", ["Feature Rollout", "Customer Feedback"])
 ]
 
-chairman = Chairman("Chairman Name", executives)
-secretary = Secretary("Secretary Name")
+chairman = Chairman("Chairman", SMEs)
+secretary = Secretary("Secretary")
 
 minutes = ["todo"]
 
-transcript = [
-    "Our new product will enable banks to offer customers instant access saving accounts at rates close to the fixed deposit rate. the objective of this meeting is to explore how we can make that happen."]
-
-# Token limit
-TOKEN_LIMIT = 1000
+transcript = ["How to get an EMI licence in the UK"]
 
 print(transcript)
-# Meeting Loop
 while not chairman.decide_if_meeting_over(minutes, transcript):
+    speaker: SME = chairman.decide_next_speaker(minutes, transcript)
 
-    next_speaker: Executive = chairman.decide_next_speaker(minutes, transcript)
+    opinion = speaker.opinion(minutes, transcript)
 
-    opinion = next_speaker.opinion(minutes, transcript)
-    if num_tokens_from_messages([{"content": opinion}]) + num_tokens_from_messages(
-            [{"content": " ".join(transcript)}]) <= TOKEN_LIMIT:
-        transcript.append(f"{next_speaker.name}: {opinion}")
-
-    pretty_print_with_wrap(f"\033[94m{next_speaker.name}\033[0m: {opinion}")
+    print_with_wrap(f"\033[94m{speaker.name}\033[0m: {opinion}")

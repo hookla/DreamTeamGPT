@@ -1,7 +1,7 @@
 from agents.agent import Agent
 
 
-class Executive(Agent):
+class SME(Agent):
     def __init__(self, name: str, expertise: str, concerns: list[str]):
         super().__init__(name)
         self.expertise = expertise

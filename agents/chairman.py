@@ -1,5 +1,5 @@
 from agents.agent import Agent
-from agents.executive import Executive
+from agents.sme import SME
 
 
 class Chairman(Agent):
@@ -10,7 +10,7 @@ class Chairman(Agent):
     def decide_if_meeting_over(self, minutes: list, transcript: list) -> bool:
         return False
 
-    def decide_next_speaker(self, minutes_list: list, transcript_list: list) -> Executive:
+    def decide_next_speaker(self, minutes_list: list, transcript_list: list) -> SME:
         minutes = " ".join(minutes_list)
         transcript = " ".join(transcript_list)
 
