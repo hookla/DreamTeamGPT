@@ -1,8 +1,8 @@
 # DreamTeamGPT
 
-pick your dream executive team watch them brainstorm your idea....
+pick your dream executive team and watch them brainstorm your idea....
 
-['profitable childrens toy for christmas.']
+['profitable children's toy for Christmas.']
 
 Jeff Bezos:
 
