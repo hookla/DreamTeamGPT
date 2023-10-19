@@ -23,11 +23,8 @@ class Chairman(Agent):
         transcript = " ".join(transcript_list)
 
         while True:
-            prompt = f"Given the transcript: {transcript}, who should speak next among the following executives? answer with only the name and nothing else\n"
-            for executive_agent in self.executives:
-                prompt += f"{executive_agent.name}: expert in {executive_agent.expertise} and concerned about {', '.join(executive_agent.concerns)}.\n"
 
-            next_speaker = self.query_gpt(prompt).strip()
+            next_speaker = self.query_gpt(transcript).strip()
 
             next_executive = next((exec for exec in self.executives if exec.name == next_speaker), None)
 
