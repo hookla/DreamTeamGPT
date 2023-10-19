@@ -1,5 +1,4 @@
 from agents.chairman import Chairman
-from agents.secretary import Secretary
 from agents.sme import SME
 from utils.print_with_wrap import print_with_wrap
 
@@ -18,16 +17,14 @@ SMEs = [
 ]
 
 chairman = Chairman("Chairman", SMEs)
-secretary = Secretary("Secretary")
 
-minutes = ["todo"]
 
 transcript = ["profitable childrens toy for christmas."]
 
 print(transcript)
-while not chairman.decide_if_meeting_over(minutes, transcript):
-    speaker: SME = chairman.decide_next_speaker(minutes, transcript)
+while not chairman.decide_if_meeting_over(transcript):
+    speaker: SME = chairman.decide_next_speaker(transcript)
 
-    opinion = speaker.opinion(minutes, transcript)
+    opinion = speaker.opinion(transcript)
 
     print_with_wrap(f"\033[94m{speaker.name}\033[0m: {opinion}")

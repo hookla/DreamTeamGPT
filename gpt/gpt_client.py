@@ -10,15 +10,19 @@ openai.api_key = api_key
 
 
 class GPTClient:
-    def __init__(self, common_instructions: str, model: str = "gpt-4"):
-        self.common_instructions = common_instructions
+    def __init__(self, common_instructions: str, user_prompt: str, model: str = "gpt-3.5-turbo"):
+        self.system_instructions = common_instructions
+        self.user_prompt = user_prompt
         self.model = model
+        self.max_tokens = 100
+        self.temperature: float = 0.3
 
-    def query(self, prompt: str, max_tokens: int, temperature: float = 0.3) -> str:
-        final_prompt = f"{self.common_instructions} {prompt}"
+    def query(self, transcript: str) -> str:
         response = openai.ChatCompletion.create(
             model=self.model,
-            temperature=temperature,
-            messages=[{"role": "user", "content": final_prompt}]
+            temperature=self.temperature,
+            messages=[{"role": "system", "content": self.system_instructions},
+                      {"role": "assistant", "content": transcript},
+                      {"role": "user", "content": self.user_prompt}]
         )
         return response.choices[0].message.content.strip()
