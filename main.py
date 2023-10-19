@@ -22,7 +22,7 @@ secretary = Secretary("Secretary")
 
 minutes = ["todo"]
 
-transcript = ["How to get an EMI licence in the UK"]
+transcript = ["profitable childrens toy for christmas."]
 
 print(transcript)
 while not chairman.decide_if_meeting_over(minutes, transcript):
