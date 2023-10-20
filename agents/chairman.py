@@ -5,15 +5,22 @@ from agents.sme import SME
 
 logger.disable(__name__)
 
+
 class Chairman(Agent):
     def __init__(self, name: str, executives: list):
         # Construct the user_prompt string with details of the executives
         exec_details = ""
         for executive_agent in executives:
-            exec_details += f"{executive_agent.name}: expert in {executive_agent.expertise} and concerned about {', '.join(executive_agent.concerns)}.\n"
+            exec_details += (
+                f"{executive_agent.name}: expert in {executive_agent.expertise} "
+                f"and concerned about {', '.join(executive_agent.concerns)}.\n"
+            )
 
-        user_prompt = (f"Your task is to decide who should speak next among meeting participates. Answer with only "
-                       f"the name and nothing else.  Do not call on the same person too often.\nParticipants: {exec_details}")
+        user_prompt = (
+            f"Your task is to decide who should speak next among meeting participates. "
+            f"Answer with only the name and nothing else. "
+            f"Do not call on the same person too often.\nParticipants: {exec_details}"
+        )
 
         # Call the superclass constructor with the constructed user_prompt
         super().__init__(name, user_prompt)
@@ -27,11 +34,12 @@ class Chairman(Agent):
         transcript = " ".join(transcript_list)
 
         while True:
-
-            next_speaker = self.query_gpt(transcript).strip().rstrip('.')
+            next_speaker = self.query_gpt(transcript).strip().rstrip(".")
             logger.info(f"Chairman called speaker: {next_speaker}")
 
-            next_executive = next((exec for exec in self.executives if exec.name == next_speaker), None)
+            next_executive = next(
+                (exec for exec in self.executives if exec.name == next_speaker), None
+            )
 
             if next_executive is not None:
                 return next_executive

@@ -14,7 +14,9 @@ openai.api_key = api_key
 
 
 class GPTClient:
-    def __init__(self, common_instructions: str, user_prompt: str, model: str = "gpt-4"):
+    def __init__(
+        self, common_instructions: str, user_prompt: str, model: str = "gpt-4"
+    ):
         self.system_instructions = common_instructions
         self.user_prompt = user_prompt
         self.model = model
@@ -28,7 +30,6 @@ class GPTClient:
         logger.info(f"Max Tokens: {self.max_tokens}")
         logger.info(f"Temperature: {self.temperature}")
 
-
     def query(self, transcript: str) -> str:
         start_time = time()
 
@@ -38,8 +39,8 @@ class GPTClient:
             messages=[
                 {"role": "system", "content": self.system_instructions},
                 {"role": "assistant", "content": transcript},
-                {"role": "user", "content": self.user_prompt}
-            ]
+                {"role": "user", "content": self.user_prompt},
+            ],
         )
 
         end_time = time()

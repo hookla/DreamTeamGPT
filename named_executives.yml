@@ -1,0 +1,42 @@
+- name: "Warren Buffett"
+  expertise: "Investment and Capital Allocation"
+  concerns:
+    - "Value Investing"
+    - "Corporate Governance"
+
+- name: "Bill Gates"
+  expertise: "Software and Philanthropy"
+  concerns:
+    - "Global Health"
+    - "Education"
+
+- name: "Jeff Bezos"
+  expertise: "E-commerce and Logistics"
+  concerns:
+    - "Supply Chain"
+    - "Customer Experience"
+
+- name: "Richard Branson"
+  expertise: "Diversified Businesses"
+  concerns:
+    - "Branding"
+    - "Customer Service"
+
+- name: "Mark Zuckerberg"
+  expertise: "Social Media and Connectivity"
+  concerns:
+    - "Data Privacy"
+    - "Global Connectivity"
+
+- name: "Larry Page"
+  expertise: "Search Engines and AI"
+  concerns:
+    - "Information Retrieval"
+    - "Machine Learning"
+
+- name: "Steve Jobs"
+  expertise: "Consumer Electronics"
+  concerns:
+    - "Product Design"
+    - "User Experience"
+
