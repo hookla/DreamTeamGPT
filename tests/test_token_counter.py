@@ -50,7 +50,9 @@ for model in [
 ]:
     print(model)
     # example token count from the function defined above
-    print(f"{num_tokens_from_messages(example_messages, model)} prompt tokens counted by num_tokens_from_messages().")
+    print(
+        f"{num_tokens_from_messages(example_messages, model)} prompt tokens counted by num_tokens_from_messages()."
+    )
     # example token count from the OpenAI API
     response = openai.ChatCompletion.create(
         model=model,
@@ -58,5 +60,7 @@ for model in [
         temperature=0,
         max_tokens=1,  # we're only counting input tokens here, so let's not waste tokens on the output
     )
-    print(f'{response["usage"]["prompt_tokens"]} prompt tokens counted by the OpenAI API.')
+    print(
+        f'{response["usage"]["prompt_tokens"]} prompt tokens counted by the OpenAI API.'
+    )
     print()

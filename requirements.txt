@@ -1,3 +1,7 @@
 tiktoken~=0.5.1
 openai~=0.28.1
 python-dotenv~=1.0.0
+black~=23.10.0
+click~=8.1.7
+loguru~=0.7.2
+PyYAML~=6.0.1
