@@ -1,6 +1,6 @@
 import json
 import os
-from time import time
+import time
 
 import openai
 from dotenv import load_dotenv
@@ -42,7 +42,7 @@ class GPTClient:
 
         for i in range(max_retries):
             try:
-                start_time = time()
+                start_time = time.time()
                 messages = [
                     {"role": "system", "content": self.system_instructions},
                     {"role": "user", "content": self.user_prompt},
@@ -56,7 +56,7 @@ class GPTClient:
                     messages=messages,
                 )
 
-                end_time = time()
+                end_time = time.time()
                 elapsed_time = end_time - start_time
 
                 # Log the time taken and token usage

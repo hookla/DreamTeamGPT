@@ -83,10 +83,10 @@ def main(idea: tuple[str], config: Path = None):
     refiner = IdeaRefiner("Refiner")
 
     transcript = []
-    transcript.append("<TRANSCRIPT OF ONGOING MEETING>")
+    transcript.append("<TRANSCRIPT OF ONGOING MEETING>\n")
     transcript.append("We are here to discuss this idea:")
     transcript.append(idea)
-    transcript.append(refiner.refine_idea((idea)))
+    transcript.append(f"\n{refiner.refine_idea((idea))}\n")
 
     print_with_wrap("\n".join(transcript))
 
@@ -96,6 +96,7 @@ def main(idea: tuple[str], config: Path = None):
         opinion = speaker.opinion(transcript)
 
         print_with_wrap(f"\033[94m{speaker.name}\033[0m: {opinion}")
+        print()
         if opinion.strip().rstrip(".") != 'no comment':
             transcript.append(opinion)
 
