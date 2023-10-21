@@ -1,3 +1,4 @@
+import json
 import os
 from time import time
 
@@ -5,7 +6,7 @@ import openai
 from dotenv import load_dotenv
 from loguru import logger
 
-logger.disable(__name__)
+#logger.disable(__name__)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -19,9 +20,9 @@ openai.api_key = api_key
 
 class GPTClient:
     def __init__(
-        self, common_instructions: str, user_prompt: str, model: str = "gpt-4"
+        self, system_instructions: str, user_prompt: str, model: str = "gpt-4"
     ):
-        self.system_instructions = common_instructions
+        self.system_instructions = system_instructions
         self.user_prompt = user_prompt
         self.model = model
         self.max_tokens = 100
@@ -36,17 +37,17 @@ class GPTClient:
 
     def query(self, transcript: str) -> str:
         start_time = time()
+        messages = [
+            {"role": "system", "content": self.system_instructions},
+            {"role": "user", "content": self.user_prompt},
+            {"role": "assistant", "content": transcript},
+        ]
+        logger.info(json.dumps(messages, indent=4))
 
         response = openai.ChatCompletion.create(
             model=self.model,
             temperature=self.temperature,
-            
-            messages=[
-                {"role": "system", "content": self.system_instructions},
-                {"role": "user", "content": self.user_prompt},
-                {"role": "assistant", "content": transcript},
-
-            ],
+            messages=messages,
         )
 
         end_time = time()
@@ -54,6 +55,6 @@ class GPTClient:
 
         # Log the time taken and token usage
         logger.info(f"GPT query took {elapsed_time:.2f} seconds")
-        logger.info(f"Tokens used in the request: {response['usage']['total_tokens']}")
+        logger.info(f"Tokens used in the request: {response['usage']}")
 
         return response.choices[0].message.content.strip()

@@ -80,7 +80,7 @@ def main(idea: tuple[str], config: Path = None):
 
     chairman = Chairman("Chairman", smes)
 
-    transcript = [idea]
+    transcript = [f"We are here to discuss this idea:\n{idea}\n\n"]
 
     print(transcript)
     while not chairman.decide_if_meeting_over(transcript):
@@ -89,6 +89,8 @@ def main(idea: tuple[str], config: Path = None):
         opinion = speaker.opinion(transcript)
 
         print_with_wrap(f"\033[94m{speaker.name}\033[0m: {opinion}")
+        if opinion.strip().rstrip(".") != 'no comment':
+            transcript.append(opinion)
 
 
 if __name__ == "__main__":

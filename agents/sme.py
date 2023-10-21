@@ -17,7 +17,8 @@ class SME(Agent):
         super().__init__(name, user_prompt)
         self.expertise = expertise
         self.concerns = concerns
+        self.spoken_count = 0
 
-    def opinion(self, transcript_list: list) -> str:
+    def opinion(self, transcript_list: list[str]) -> str:
         transcript = " ".join(transcript_list)
         return self.query_gpt(transcript)
