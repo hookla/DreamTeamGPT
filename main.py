@@ -81,15 +81,19 @@ def main(idea: tuple[str], config: Path = None):
 
     chairman = Chairman("Chairman", smes)
     refiner = IdeaRefiner("Refiner")
-    refinement = refiner.refine_idea(idea)
 
-    transcript = [f"<TRANSCRIPT OF ONGOING MEETING>\nWe are here to discuss this idea:\n{idea}\n{refinement}\n"]
-    print_with_wrap(f"{transcript[0]}")
+    transcript = []
+    transcript.append("<TRANSCRIPT OF ONGOING MEETING>")
+    transcript.append("We are here to discuss this idea:")
+    transcript.append(idea)
+    transcript.append(refiner.refine_idea((idea)))
+
+    print_with_wrap("\n".join(transcript))
+
     while not chairman.decide_if_meeting_over(transcript):
         speaker: SME = chairman.decide_next_speaker(transcript)
 
         opinion = speaker.opinion(transcript)
-
 
         print_with_wrap(f"\033[94m{speaker.name}\033[0m: {opinion}")
         if opinion.strip().rstrip(".") != 'no comment':
