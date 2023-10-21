@@ -4,11 +4,12 @@ import click
 from loguru import logger
 
 from agents.chairman import Chairman
+from agents.idea_refiner import IdeaRefiner
 from agents.sme import SME
 from utils.parse_config import parse_yaml_config
 from utils.print_with_wrap import print_with_wrap
+import logger_config
 
-logger.disable(__name__)
 
 # typical C-suite of executives
 DEFAULT_SME_DICT = (
@@ -79,14 +80,16 @@ def main(idea: tuple[str], config: Path = None):
     smes = [SME(**d) for d in sme_dict]
 
     chairman = Chairman("Chairman", smes)
+    refiner = IdeaRefiner("Refiner")
+    refinement = refiner.refine_idea(idea)
 
-    transcript = [f"We are here to discuss this idea:\n{idea}\n\n"]
-
-    print(transcript)
+    transcript = [f"<TRANSCRIPT OF ONGOING MEETING>\nWe are here to discuss this idea:\n{idea}\n{refinement}\n"]
+    print_with_wrap(f"{transcript[0]}")
     while not chairman.decide_if_meeting_over(transcript):
         speaker: SME = chairman.decide_next_speaker(transcript)
 
         opinion = speaker.opinion(transcript)
+
 
         print_with_wrap(f"\033[94m{speaker.name}\033[0m: {opinion}")
         if opinion.strip().rstrip(".") != 'no comment':

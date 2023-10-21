@@ -6,7 +6,6 @@ import openai
 from dotenv import load_dotenv
 from loguru import logger
 
-#logger.disable(__name__)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -20,7 +19,7 @@ openai.api_key = api_key
 
 class GPTClient:
     def __init__(
-        self, system_instructions: str, user_prompt: str, model: str = "gpt-4"
+        self, system_instructions: str, user_prompt: str, model: str = "gpt-3.5-turbo"
     ):
         self.system_instructions = system_instructions
         self.user_prompt = user_prompt
@@ -42,7 +41,7 @@ class GPTClient:
             {"role": "user", "content": self.user_prompt},
             {"role": "assistant", "content": transcript},
         ]
-        logger.info(json.dumps(messages, indent=4))
+        logger.info(json.dumps(messages, indent=4).replace("\\n", "\n"))
 
         response = openai.ChatCompletion.create(
             model=self.model,
