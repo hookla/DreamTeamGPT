@@ -6,10 +6,10 @@ from loguru import logger
 from agents.chairman import Chairman
 from agents.idea_refiner import IdeaRefiner
 from agents.sme import SME
+from constants import NO_COMMENT
 from utils.parse_config import parse_yaml_config
 from utils.print_with_wrap import print_with_wrap
 import logger_config
-
 
 # typical C-suite of executives
 DEFAULT_SME_DICT = (
@@ -82,13 +82,14 @@ def main(idea: tuple[str], config: Path = None):
     chairman = Chairman("Chairman", smes)
     refiner = IdeaRefiner("Refiner")
 
-    transcript = []
-    transcript.append("<TRANSCRIPT OF ONGOING MEETING>\n")
-    transcript.append("We are here to discuss this idea:")
-    transcript.append(idea)
-    transcript.append(f"\n{refiner.refine_idea((idea))}\n")
+    transcript = ["<TRANSCRIPT OF ONGOING MEETING>", ".", "We are here to discuss this idea:", idea, "."]
 
     print_with_wrap("\n".join(transcript))
+
+    refined_idea = refiner.refine_idea(idea)
+    transcript.append(refined_idea)
+    print_with_wrap(refined_idea)
+    print()
 
     while not chairman.decide_if_meeting_over(transcript):
         speaker: SME = chairman.decide_next_speaker(transcript)
@@ -97,7 +98,7 @@ def main(idea: tuple[str], config: Path = None):
 
         print_with_wrap(f"\033[94m{speaker.name}\033[0m: {opinion}")
         print()
-        if opinion.strip().rstrip(".") != 'no comment':
+        if opinion.strip().rstrip(".").upper() != NO_COMMENT:
             transcript.append(opinion)
 
 
