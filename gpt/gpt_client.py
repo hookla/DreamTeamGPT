@@ -27,7 +27,7 @@ class GPTClient:
         self.user_prompt = user_prompt
         self.model = model
         self.max_tokens = 100
-        self.temperature: float = 0.6
+        self.temperature: float = 0.1
         # Log initial configuration on startup
         logger.info(f"Initializing GPTClient with the following configuration:")
         logger.info(f"System Instructions: {self.system_instructions}")
@@ -69,4 +69,4 @@ class GPTClient:
                 time.sleep(retry_delay)
 
         logger.error(f"Max retries reached. Could not complete the GPT query.")
-        return "Rate limit reached. Could not complete the request."
+        return "Error in GPT client that could not be resolved by retrying."
