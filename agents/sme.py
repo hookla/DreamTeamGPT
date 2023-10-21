@@ -8,8 +8,8 @@ class SME(Agent):
             f"Adopt the persona of the {name}.",
             f"Your expertise is {expertise}.",
             f"Your concerns are {', '.join(concerns)}.",
-            "You should aim to provide original technical insights that align with these areas "
-            "of expertise and concerns. Do not repeat points that have already been made.",
+            f"You will be shown a transacript of a meeting.  You have been asked to speak by the meeting chairman.  Specifically, provide insights on {', '.join(concerns)} based on the meeting transcript. "
+            "Do not repeat points that have already been made.",
         ]
         user_prompt = " ".join(user_prompt_list)
 
