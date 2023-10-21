@@ -10,6 +10,10 @@ logger.disable(__name__)
 # Load environment variables from .env file
 load_dotenv()
 api_key = os.getenv("openai.api_key")
+
+if not api_key:
+    raise ValueError("API key not found in environment variables")
+
 openai.api_key = api_key
 
 
