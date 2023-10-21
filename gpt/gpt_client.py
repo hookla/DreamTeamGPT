@@ -40,10 +40,12 @@ class GPTClient:
         response = openai.ChatCompletion.create(
             model=self.model,
             temperature=self.temperature,
+            
             messages=[
                 {"role": "system", "content": self.system_instructions},
-                {"role": "assistant", "content": transcript},
                 {"role": "user", "content": self.user_prompt},
+                {"role": "assistant", "content": transcript},
+
             ],
         )
 
