@@ -6,7 +6,6 @@ import openai
 from dotenv import load_dotenv
 from loguru import logger
 
-
 # Load environment variables from .env file
 load_dotenv()
 api_key = os.getenv("openai.api_key")
@@ -16,10 +15,13 @@ if not api_key:
 
 openai.api_key = api_key
 
+GPT3 = "gpt-3.5-turbo"
+GPT4 = "gpt-4"
+
 
 class GPTClient:
     def __init__(
-        self, system_instructions: str, user_prompt: str, model: str = "gpt-3.5-turbo"
+            self, system_instructions: str, user_prompt: str, model: str = GPT4
     ):
         self.system_instructions = system_instructions
         self.user_prompt = user_prompt
@@ -35,25 +37,36 @@ class GPTClient:
         logger.info(f"Temperature: {self.temperature}")
 
     def query(self, transcript: str) -> str:
-        start_time = time()
-        messages = [
-            {"role": "system", "content": self.system_instructions},
-            {"role": "user", "content": self.user_prompt},
-            {"role": "assistant", "content": transcript},
-        ]
-        logger.info(json.dumps(messages, indent=4).replace("\\n", "\n"))
+        max_retries = 6  # Number of retries
+        retry_delay = 10  # Delay between retries in seconds
 
-        response = openai.ChatCompletion.create(
-            model=self.model,
-            temperature=self.temperature,
-            messages=messages,
-        )
+        for i in range(max_retries):
+            try:
+                start_time = time()
+                messages = [
+                    {"role": "system", "content": self.system_instructions},
+                    {"role": "user", "content": self.user_prompt},
+                    {"role": "assistant", "content": transcript},
+                ]
+                logger.info(json.dumps(messages, indent=4).replace("\\n", "\n"))
 
-        end_time = time()
-        elapsed_time = end_time - start_time
+                response = openai.ChatCompletion.create(
+                    model=self.model,
+                    temperature=self.temperature,
+                    messages=messages,
+                )
 
-        # Log the time taken and token usage
-        logger.info(f"GPT query took {elapsed_time:.2f} seconds")
-        logger.info(f"Tokens used in the request: {response['usage']}")
+                end_time = time()
+                elapsed_time = end_time - start_time
 
-        return response.choices[0].message.content.strip()
+                # Log the time taken and token usage
+                logger.info(f"GPT query took {elapsed_time:.2f} seconds")
+                logger.info(f"Tokens used in the request: {response['usage']}")
+
+                return response.choices[0].message.content.strip()
+            except openai.error.RateLimitError as e:
+                logger.warning(f"Rate limit reached. Retrying in {retry_delay} seconds. Details: {e}")
+                time.sleep(retry_delay)
+
+        logger.error(f"Max retries reached. Could not complete the GPT query.")
+        return "Rate limit reached. Could not complete the request."
