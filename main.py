@@ -1,15 +1,19 @@
+import os
 from pathlib import Path
 
 import click
-from loguru import logger
+from dotenv import load_dotenv
 
 from agents.chairman import Chairman
 from agents.idea_refiner import IdeaRefiner
 from agents.sme import SME
+from clients import AIClientConfig, AIClientType, get_ai_client
 from constants import NO_COMMENT
+from utils.logging import configure_logging
 from utils.parse_config import parse_yaml_config
 from utils.print_with_wrap import print_with_wrap
-import logger_config
+
+load_dotenv()
 
 # typical C-suite of executives
 DEFAULT_SME_DICT = (
@@ -71,18 +75,31 @@ DEFAULT_SME_DICT = (
     default=None,
     help="yaml file with team personalities details",
 )
-def main(idea: tuple[str], config: Path = None):
+@click.option("-v", "--verbose", default=1, count=True)
+def main(idea: str, config: Path = None, verbose: int = 1):
+    configure_logging(verbose)
+    load_dotenv()
+    client = get_ai_client(
+        AIClientType.ChatGPT, AIClientConfig(api_key=os.getenv("openai.api_key"))
+    )
     if config:
         sme_dict = parse_yaml_config(config)
     else:
         sme_dict = DEFAULT_SME_DICT
 
-    smes = [SME(**d) for d in sme_dict]
+    smes = [SME(client=client, **d) for d in sme_dict]
 
-    chairman = Chairman("Chairman", smes)
-    refiner = IdeaRefiner("Refiner")
+    chairman = Chairman(client, smes)
 
-    transcript = ["<TRANSCRIPT OF ONGOING MEETING>", ".", "We are here to discuss this idea:", idea, "."]
+    refiner = IdeaRefiner(client, "Refiner")
+
+    transcript = [
+        "<TRANSCRIPT OF ONGOING MEETING>",
+        ".",
+        "We are here to discuss this idea:",
+        idea,
+        ".",
+    ]
 
     print_with_wrap("\n".join(transcript))
 
