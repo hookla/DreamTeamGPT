@@ -8,56 +8,10 @@ from agents.chairman import Chairman
 from agents.idea_refiner import IdeaRefiner
 from agents.sme import SME
 from clients import AIClientConfig, AIClientType, get_ai_client
-from constants import NO_COMMENT
+from constants import DEFAULT_SME_DICT, NO_COMMENT
 from utils.logging import configure_logging
 from utils.parse_config import parse_yaml_config
 from utils.print_with_wrap import print_with_wrap
-
-load_dotenv()
-
-# typical C-suite of executives
-DEFAULT_SME_DICT = (
-    {
-        "name": "CEO",
-        "expertise": "Corporate Strategy",
-        "concerns": ["Market Entry", "Competitive Positioning"],
-    },
-    {
-        "name": "CFO",
-        "expertise": "Financial Products",
-        "concerns": ["Rate Management", "Regulatory Compliance"],
-    },
-    {
-        "name": "COO",
-        "expertise": "Operational Efficiency",
-        "concerns": ["Scalability", "Cost Optimization"],
-    },
-    {
-        "name": "CMO",
-        "expertise": "Customer Acquisition",
-        "concerns": ["Target Market", "Onboarding Experience"],
-    },
-    {
-        "name": "CTO",
-        "expertise": "Technical Infrastructure",
-        "concerns": ["Data Security", "System Integration"],
-    },
-    {
-        "name": "CRO",
-        "expertise": "Risk Management",
-        "concerns": ["Fraud Detection", "Compliance"],
-    },
-    {
-        "name": "CCO",
-        "expertise": "Customer Experience",
-        "concerns": ["UX/UI Design", "Customer Support"],
-    },
-    {
-        "name": "CPO",
-        "expertise": "Product Management",
-        "concerns": ["Feature Rollout", "Customer Feedback"],
-    },
-)
 
 
 @click.command()
