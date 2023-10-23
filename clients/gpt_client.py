@@ -14,7 +14,7 @@ class Models(str, Enum):
 
 
 class GPTClient(AIClient):
-    def __init__(self, api_key: str, model: str = Models.GPT4.value):
+    def __init__(self, api_key: str, model: str = Models.GPT3.value):
         openai.api_key = api_key
         self._system_instructions = None
         self._user_prompt = None
@@ -46,6 +46,13 @@ class GPTClient(AIClient):
         self._user_prompt = value
 
     def query(self, transcript: str) -> str:
+        if self._system_instructions is None:
+            logger.error("self._system_instructions is None. Aborting the query.")
+            raise RuntimeError("self._system_instructions is None, cannot proceed with query.")
+        if self._user_prompt is None:
+            logger.error("self._user_prompt is None. Aborting the query.")
+            raise RuntimeError("self._user_prompt is None, cannot proceed with query.")
+
         max_retries = 6  # Number of retries
         retry_delay = 10  # Delay between retries in seconds
 

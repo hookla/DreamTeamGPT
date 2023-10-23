@@ -34,7 +34,7 @@ def main(idea: str, config: Path = None, verbose: int = 1):
     configure_logging(verbose)
     load_dotenv()
     client = get_ai_client(
-        AIClientType.ChatGPT, AIClientConfig(api_key=os.getenv("openai.api_key"))
+        AIClientType.ChatGPT, AIClientConfig(model="gpt-3.5-turbo", api_key=os.getenv("openai.api_key"))
     )
     if config:
         sme_dict = parse_yaml_config(config)
