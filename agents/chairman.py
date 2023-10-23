@@ -48,7 +48,7 @@ class Chairman(Agent):
             if next_executive is not None:
                 next_executive.spoken_count += 1  # Update the frequency count
                 self.user_prompt = self.update_user_prompt(self.executives)
-                self.gpt_client.user_prompt = self.user_prompt
+                self.client.user_prompt = self.user_prompt
                 return next_executive
 
             logger.info(f"{next_speaker} is not a valid exec...")

@@ -24,8 +24,12 @@ class Agent:
         self.name = name
 
         self.client = client
+        self.system_prompt = system_prompt
+        self.user_prompt = user_prompt
         self.client.common_instructions = system_prompt
         self.client.user_prompt = user_prompt
 
     def query_gpt(self, transcript: str) -> str:
+        self.client.system_instructions = self.system_prompt
+        self.client.user_prompt = self.user_prompt
         return self.client.query(transcript)
