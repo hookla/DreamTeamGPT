@@ -1,23 +1,25 @@
+from typing import Callable
+
 from loguru import logger
 
 from dream_team_gpt.agents.agent import Agent
 from dream_team_gpt.agents.sme import SME
-from dream_team_gpt.clients.base import AIClient
 
 
 class Chairman(Agent):
-    def __init__(self, client: AIClient, executives: list[SME], name: str = "Chairman"):
+    def __init__(self, client_factory: Callable, executives: list[SME], name: str = "Chairman"):
         # Construct the user_prompt string with details of the executives
         self.user_prompt = self.update_user_prompt(executives)
 
         system_prompt = f"Answer with only the name and nothing else."
 
         # Call the superclass constructor with the constructed user_prompt
-        super().__init__(client, name, self.user_prompt, system_prompt)
+        super().__init__(client_factory, name, self.user_prompt, system_prompt)
 
         self.executives = executives
 
-    def update_user_prompt(self, SMEs: list[SME]) -> str:
+    @staticmethod
+    def update_user_prompt(SMEs: list[SME]) -> str:
         frequency_info_list = []
         for sme in SMEs:
             frequency_info_list.append(
@@ -31,12 +33,10 @@ class Chairman(Agent):
             f"Participants:\n{''.join(frequency_info_list)} "
         )
 
-    def decide_if_meeting_over(self, transcript: list) -> bool:
+    def decide_if_meeting_over(self, transcript: str) -> bool:
         return False
 
-    def decide_next_speaker(self, transcript_list: list[str]) -> SME:
-        transcript = " ".join(transcript_list)
-
+    def decide_next_speaker(self, transcript: str) -> SME:
         while True:
             next_speaker = self.query_gpt(transcript).strip().rstrip(".")
             logger.info(f"Chairman called speaker: {next_speaker}")

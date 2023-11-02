@@ -1,7 +1,7 @@
 from textwrap import dedent
+from typing import Callable
 
 from dream_team_gpt.agents.agent import Agent
-from dream_team_gpt.clients.base import AIClient
 
 USER_PROMPT_TEMPLATE = dedent(
     """\
@@ -18,18 +18,17 @@ USER_PROMPT_TEMPLATE = dedent(
 
 
 class SME(Agent):
-    def __init__(self, client: AIClient, name: str, expertise: str, concerns: list[str]):
+    def __init__(self, client_factory: Callable, name: str, expertise: str, concerns: list[str]):
         # Construct the user_prompt string
         user_prompt = USER_PROMPT_TEMPLATE.format(
             name=name, expertise=expertise, concerns=", ".join(concerns)
         )
 
         # Call the superclass constructor with the constructed user_prompt
-        super().__init__(client, name, user_prompt)
+        super().__init__(client_factory, name, user_prompt)
         self.expertise = expertise
         self.concerns = concerns
         self.spoken_count = 0
 
-    def opinion(self, transcript_list: list[str]) -> str:
-        transcript = " ".join(transcript_list)
+    def opinion(self, transcript: str) -> str:
         return self.query_gpt(transcript)

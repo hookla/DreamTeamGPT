@@ -9,7 +9,7 @@ jobs:
       matrix:
         python-version: ["3.11"]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
@@ -20,6 +20,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install poetry
         poetry install
-    - name: Analysing the code with pylint
+    - name: Analysing the code
       run: |
         make style
+    - name: Run tests
+      run: |
+        make test

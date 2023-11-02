@@ -1,7 +1,7 @@
 import tiktoken
 
 
-def num_tokens_from_messages(messages, model="gpt-3.5-turbo-0613") -> int:
+def num_tokens_from_messages(messages: list[dict], model: str = "gpt-3.5-turbo-0613") -> int:
     """Return the number of tokens used by a list of messages."""
     try:
         encoding = tiktoken.encoding_for_model(model)
