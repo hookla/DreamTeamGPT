@@ -1,15 +1,15 @@
 from textwrap import dedent
 
-from clients.base import AIClient
-from constants import NO_COMMENT
+from dream_team_gpt.clients.base import AIClient
+from dream_team_gpt.constants import NO_COMMENT
 
 DEFAULT_SYSTEM_PROMPT = dedent(
     f"""\
-Provide succinct, fact-based answers. Eliminate filler words and politeness. 
-Concentrate on delivering actionable insights and concrete solutions.
-Avoid vague or generic statements. Stick to the topic at hand. 
-If your response doesn't meet these standards, reply with the exact words '{NO_COMMENT}'
-"""
+    Provide succinct, fact-based answers. Eliminate filler words and politeness. 
+    Concentrate on delivering actionable insights and concrete solutions.
+    Avoid vague or generic statements. Stick to the topic at hand. 
+    If your response doesn't meet these standards, reply with the exact words '{NO_COMMENT}'
+    """
 )
 
 

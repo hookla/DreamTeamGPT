@@ -1,9 +1,9 @@
+from enum import Enum
 import json
 import time
-from enum import Enum
 
-import openai
 from loguru import logger
+import openai
 
 from .base import AIClient
 

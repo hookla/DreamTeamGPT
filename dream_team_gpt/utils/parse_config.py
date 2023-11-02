@@ -1,7 +1,7 @@
 from pathlib import Path
 
-import yaml
 from loguru import logger
+import yaml
 
 
 def parse_yaml_config(file_path: Path) -> list[dict]:

@@ -1,8 +1,8 @@
 from loguru import logger
 
-from agents.agent import Agent
-from agents.sme import SME
-from clients.base import AIClient
+from dream_team_gpt.agents.agent import Agent
+from dream_team_gpt.agents.sme import SME
+from dream_team_gpt.clients.base import AIClient
 
 
 class Chairman(Agent):

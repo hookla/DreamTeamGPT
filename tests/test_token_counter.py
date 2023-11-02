@@ -1,9 +1,9 @@
 import os
 
-import openai
 from dotenv import load_dotenv
+import openai
 
-from utils.token_counter import num_tokens_from_messages
+from dream_team_gpt.utils import num_tokens_from_messages
 
 load_dotenv()
 API_KEY = os.getenv("openai.api_key")
@@ -60,7 +60,5 @@ for model in [
         temperature=0,
         max_tokens=1,  # we're only counting input tokens here, so let's not waste tokens on the output
     )
-    print(
-        f'{response["usage"]["prompt_tokens"]} prompt tokens counted by the OpenAI API.'
-    )
+    print(f'{response["usage"]["prompt_tokens"]} prompt tokens counted by the OpenAI API.')
     print()

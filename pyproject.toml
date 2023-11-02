@@ -1,0 +1,57 @@
+[tool.poetry]
+name = "dream_team_gpt"
+version = "0.0.1"
+description = "Pick your dream executive team and watch them brainstorm your idea"
+authors = ["Laurence Hook <hookla1976@gmail.com>", "Stepan Sinkov <supercool@duck.com>"]
+repository = "https://github.com/hookla/DreamTeamGPT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.11"
+tiktoken = "~=0.5.1"
+openai = "~=0.28.1"
+python-dotenv = "~=1.0.0"
+click = "~=8.1.7"
+loguru = "~=0.7.2"
+pyyaml = "~=6.0.1"
+
+[tool.poetry.group.dev.dependencies]
+black = "*"
+pytest = "*"
+pytest-cov = "^4.0.0"
+mypy = "^1.5.1"
+pre-commit = "^3.4.0"
+
+[tool.poetry.group.docs.dependencies]
+mkdocs = "^1.4.2"
+mkdocs-material = "^9.2.7"
+mkdocstrings = {extras = ["python"], version = "^0.23.0"}
+
+[build-system]
+requires = ["poetry-core>=1.4.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 99
+target-version = ['py311']
+
+[tool.isort]
+profile = "black"
+line_length = 99
+force_grid_wrap = 0
+from_first = true
+include_trailing_comma = true
+use_parentheses = true
+
+[tool.mypy]
+disallow_untyped_defs = true
+disallow_any_unimported = true
+no_implicit_optional = true
+check_untyped_defs = true
+warn_return_any = true
+warn_unused_ignores = true
+show_error_codes = true
+python_version = 3.11
+
+[tool.pytest.ini_options]
+testpaths = "tests"

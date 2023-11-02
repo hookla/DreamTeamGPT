@@ -1,4 +1,4 @@
-from agents.agent import Agent
+from dream_team_gpt.agents.agent import Agent
 
 
 class Secretary(Agent):

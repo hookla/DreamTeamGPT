@@ -1,7 +1,7 @@
 from textwrap import dedent
 
-from agents.agent import Agent
-from clients.base import AIClient
+from dream_team_gpt.agents.agent import Agent
+from dream_team_gpt.clients.base import AIClient
 
 USER_PROMPT_TEMPLATE = dedent(
     """\
@@ -18,9 +18,7 @@ USER_PROMPT_TEMPLATE = dedent(
 
 
 class SME(Agent):
-    def __init__(
-        self, client: AIClient, name: str, expertise: str, concerns: list[str]
-    ):
+    def __init__(self, client: AIClient, name: str, expertise: str, concerns: list[str]):
         # Construct the user_prompt string
         user_prompt = USER_PROMPT_TEMPLATE.format(
             name=name, expertise=expertise, concerns=", ".join(concerns)
