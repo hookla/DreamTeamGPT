@@ -28,7 +28,6 @@ from dream_team_gpt.utils import configure_logging, parse_yaml_config, print_wit
 )
 @click.option("-v", "--verbose", default=1, count=True)
 def main(idea: str, config: Path = None, verbose: int = 1):
-
     print(idea)
     configure_logging(verbose)
     load_dotenv()

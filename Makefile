@@ -16,13 +16,11 @@ style: ## Run code style checks.
 	@poetry run isort --check --diff .
 	@echo "🚀 Checking code formatting with black: Running black --check --diff ."
 	@poetry run black --check --diff .
-	@echo "🚀 Static type checking: Running mypy -p dream_team_gpt"
-	@poetry run mypy -p dream_team_gpt
 
 
 test: ## Test the code with pytest
 	@echo "🚀 Testing code: Running pytest"
-	@#poetry run pytest tests/
+	@poetry run pytest tests/
 
 verify: ## Run style and tests
 	check

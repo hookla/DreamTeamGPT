@@ -45,13 +45,13 @@ include_trailing_comma = true
 use_parentheses = true
 
 [tool.mypy]
-disallow_untyped_defs = true
-disallow_any_unimported = true
-no_implicit_optional = true
 check_untyped_defs = true
+disallow_any_unimported = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+show_error_codes = true
 warn_return_any = true
 warn_unused_ignores = true
-show_error_codes = true
 python_version = 3.11
 
 [tool.pytest.ini_options]
