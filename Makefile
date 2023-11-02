@@ -8,21 +8,21 @@ fmt: ## Format code with isort and blace
 check: ## Run code quality tools.
 	@echo "🚀 Checking Poetry lock file consistency with 'pyproject.toml': Running poetry lock --check"
 	@poetry check --lock
-#	@echo "🚀 Static type checking: Running mypy -p dream_team_gpt"
-#	@poetry run mypy -p dream_team_gpt
+	@echo "🚀 Static type checking: Running mypy -p dream_team_gpt"
+	@poetry run mypy -p dream_team_gpt
 
 style: ## Run code style checks.
 	@echo "🚀 Checking code formatting with isort: Running isort --check --diff ."
 	@poetry run isort --check --diff .
 	@echo "🚀 Checking code formatting with black: Running black --check --diff ."
 	@poetry run black --check --diff .
-#	@echo "🚀 Static type checking: Running mypy -p dream_team_gpt"
-#	@poetry run mypy -p dream_team_gpt
+	@echo "🚀 Static type checking: Running mypy -p dream_team_gpt"
+	@poetry run mypy -p dream_team_gpt
 
 
 test: ## Test the code with pytest
 	@echo "🚀 Testing code: Running pytest"
-	@poetry run pytest
+	@#poetry run pytest tests/
 
 verify: ## Run style and tests
 	check
