@@ -1,9 +1,9 @@
 import os
 
-import openai
 from dotenv import load_dotenv
+import openai
 
-from utils.token_counter import num_tokens_from_messages
+from dream_team_gpt.utils import num_tokens_from_messages
 
 load_dotenv()
 API_KEY = os.getenv("openai.api_key")
@@ -40,27 +40,28 @@ example_messages = [
     },
 ]
 
-for model in [
-    "gpt-3.5-turbo-0301",
-    "gpt-3.5-turbo-0613",
-    "gpt-3.5-turbo",
-    "gpt-4-0314",
-    "gpt-4-0613",
-    "gpt-4",
-]:
-    print(model)
-    # example token count from the function defined above
-    print(
-        f"{num_tokens_from_messages(example_messages, model)} prompt tokens counted by num_tokens_from_messages()."
-    )
-    # example token count from the OpenAI API
-    response = openai.ChatCompletion.create(
-        model=model,
-        messages=example_messages,
-        temperature=0,
-        max_tokens=1,  # we're only counting input tokens here, so let's not waste tokens on the output
-    )
-    print(
-        f'{response["usage"]["prompt_tokens"]} prompt tokens counted by the OpenAI API.'
-    )
-    print()
+
+# TODO: update test to work without API key and actually assert something
+def test_token_counter():
+    for model in [
+        "gpt-3.5-turbo-0301",
+        "gpt-3.5-turbo-0613",
+        "gpt-3.5-turbo",
+        "gpt-4-0314",
+        "gpt-4-0613",
+        "gpt-4",
+    ]:
+        print(model)
+        # example token count from the function defined above
+        print(
+            f"{num_tokens_from_messages(example_messages, model)} prompt tokens counted by num_tokens_from_messages()."
+        )
+        # example token count from the OpenAI API
+        response = openai.ChatCompletion.create(
+            model=model,
+            messages=example_messages,
+            temperature=0,
+            max_tokens=1,  # we're only counting input tokens here, so let's not waste tokens on the output
+        )
+        print(f'{response["usage"]["prompt_tokens"]} prompt tokens counted by the OpenAI API.')
+        print()

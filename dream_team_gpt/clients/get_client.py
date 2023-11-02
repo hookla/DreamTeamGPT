@@ -1,8 +1,8 @@
 from enum import Enum
 
-from clients.base import AIClient
-from clients.config import AIClientConfig
-from clients.gpt_client import GPTClient
+from dream_team_gpt.clients.base import AIClient
+from dream_team_gpt.clients.config import AIClientConfig
+from dream_team_gpt.clients.gpt_client import GPTClient
 
 
 class AIClientType(str, Enum):

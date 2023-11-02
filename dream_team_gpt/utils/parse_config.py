@@ -1,7 +1,7 @@
 from pathlib import Path
 
-import yaml
 from loguru import logger
+import yaml
 
 
 def parse_yaml_config(file_path: Path) -> list[dict]:
@@ -20,7 +20,7 @@ def parse_yaml_config(file_path: Path) -> list[dict]:
     return items
 
 
-def read_yaml(file_path):
+def read_yaml(file_path: Path) -> list[dict]:
     with open(file_path, "r") as file:
         data = yaml.safe_load(file)
     return data

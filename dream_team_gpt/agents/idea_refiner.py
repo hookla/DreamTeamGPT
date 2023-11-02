@@ -1,7 +1,7 @@
 from textwrap import dedent
 
-from agents.agent import Agent
-from clients import AIClient
+from dream_team_gpt.agents.agent import Agent
+from dream_team_gpt.clients import AIClient
 
 REFINER_PROMPT = dedent(
     """\

@@ -1,17 +1,14 @@
-import os
 from pathlib import Path
+import os
 
-import click
 from dotenv import load_dotenv
+import click
 
-from agents.chairman import Chairman
-from agents.idea_refiner import IdeaRefiner
-from agents.sme import SME
-from clients import AIClientConfig, AIClientType, get_ai_client
-from constants import DEFAULT_SME_DICT, NO_COMMENT
-from utils.logging import configure_logging
-from utils.parse_config import parse_yaml_config
-from utils.print_with_wrap import print_with_wrap
+from dream_team_gpt.agents import SME, Chairman
+from dream_team_gpt.agents.idea_refiner import IdeaRefiner
+from dream_team_gpt.clients import AIClientConfig, AIClientType, get_ai_client
+from dream_team_gpt.constants import DEFAULT_SME_DICT, NO_COMMENT
+from dream_team_gpt.utils import configure_logging, parse_yaml_config, print_with_wrap
 
 
 @click.command()
@@ -31,10 +28,12 @@ from utils.print_with_wrap import print_with_wrap
 )
 @click.option("-v", "--verbose", default=1, count=True)
 def main(idea: str, config: Path = None, verbose: int = 1):
+    print(idea)
     configure_logging(verbose)
     load_dotenv()
     client = get_ai_client(
-        AIClientType.ChatGPT, AIClientConfig(model="gpt-3.5-turbo", api_key=os.getenv("openai.api_key"))
+        AIClientType.ChatGPT,
+        AIClientConfig(model="gpt-3.5-turbo", api_key=os.getenv("openai.api_key")),
     )
     if config:
         sme_dict = parse_yaml_config(config)

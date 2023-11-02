@@ -1,6 +1,36 @@
-# DreamTeamGPT
+# DreamTeamGPT 🤖🤖🤖
 
-pick your dream executive team and watch them brainstorm your idea....
+Pick your dream executive team and watch them brainstorm your idea....
+
+## Installation
+
+Create new virtual environment with python3.11 
+```bash
+pip install poetry  # install poetry
+poetry install      # install project dependencies
+
+cp .env.template .env   # .env is used for local environment variables
+```
+
+Update `.env` with your OpenAI API [key](https://platform.openai.com/)
+
+After installation run 
+```bash 
+make verify
+```
+
+Before committing your updates don't forget to apply formatting
+```bash 
+make fmt
+```
+## Usage
+
+Use `run.sh` to make AI work on your idea:
+```bash 
+./run.sh -i "profitable children's toy for Christmas"
+```
+
+<details> <summary>Output example</summary>
 
 ['profitable children's toy for Christmas.']
 
@@ -48,3 +78,11 @@ disruptions. Implement predictive analytics to anticipate demand, streamlining i
 reliable, fast delivery options to enhance customer experience.
 Ensure web platform can handle increased traffic and purchases. Prioritize customer feedback to quickly address issues
 and maintain reputation.
+
+</details>
+
+
+Check `help` for more options:
+```bash 
+./run.sh --help
+```
