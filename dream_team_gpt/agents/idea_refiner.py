@@ -1,7 +1,7 @@
 from textwrap import dedent
+from typing import Callable
 
 from dream_team_gpt.agents.agent import Agent
-from dream_team_gpt.clients import AIClient
 
 REFINER_PROMPT = dedent(
     """\
@@ -14,9 +14,9 @@ REFINER_PROMPT = dedent(
 
 
 class IdeaRefiner(Agent):
-    def __init__(self, client: AIClient, name: str = "Refiner"):
+    def __init__(self, client_factory: Callable, name: str = "Refiner"):
         # Call the superclass constructor with the constructed user_prompt
-        super().__init__(client, name, REFINER_PROMPT)
+        super().__init__(client_factory, name, REFINER_PROMPT)
 
     def refine_idea(self, idea: str) -> str:
         return self.query_gpt(idea)

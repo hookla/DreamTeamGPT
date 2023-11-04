@@ -1,6 +1,7 @@
 import os
 
 from dotenv import load_dotenv
+from pytest import mark
 import openai
 
 from dream_team_gpt.utils import num_tokens_from_messages
@@ -42,6 +43,7 @@ example_messages = [
 
 
 # TODO: update test to work without API key and actually assert something
+@mark.skip("Need to be updated")
 def test_token_counter():
     for model in [
         "gpt-3.5-turbo-0301",

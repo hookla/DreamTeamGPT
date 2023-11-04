@@ -1,6 +1,6 @@
 from textwrap import dedent
+from typing import Callable
 
-from dream_team_gpt.clients.base import AIClient
 from dream_team_gpt.constants import NO_COMMENT
 
 DEFAULT_SYSTEM_PROMPT = dedent(
@@ -16,14 +16,14 @@ DEFAULT_SYSTEM_PROMPT = dedent(
 class Agent:
     def __init__(
         self,
-        client: AIClient,
+        client_factory: Callable,
         name: str,
         user_prompt: str,
         system_prompt: str = DEFAULT_SYSTEM_PROMPT,
     ):
         self.name = name
 
-        self.client = client
+        self.client = client_factory()
         self.system_prompt = system_prompt
         self.user_prompt = user_prompt
         self.client.common_instructions = system_prompt
