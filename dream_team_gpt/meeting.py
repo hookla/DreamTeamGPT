@@ -1,9 +1,9 @@
-from dataclasses import dataclass, field
 from pathlib import Path
 from textwrap import dedent
-from typing import List
+from typing import List, Optional
 
 from loguru import logger
+from pydantic import BaseModel, Field, field_validator
 
 from dream_team_gpt.agents import SME, Chairman
 from dream_team_gpt.agents.idea_refiner import IdeaRefiner
@@ -13,13 +13,15 @@ from dream_team_gpt.constants import DEFAULT_SME_DICT, NO_COMMENT
 from dream_team_gpt.utils import parse_yaml_config, print_with_wrap
 
 
-@dataclass
-class Transcript(str):
-    idea: str
-    refined_idea: str | None = None
-    opinions: list[str] = field(default_factory=list)
-
+class Transcript(BaseModel):
+    """Meeting transcript containing the idea and all opinions."""
+    
+    idea: str = Field(..., description="The original idea being discussed")
+    refined_idea: Optional[str] = Field(None, description="The refined version of the idea")
+    opinions: List[str] = Field(default_factory=list, description="List of opinions from executives")
+    
     def __str__(self) -> str:
+        """Format the transcript for display."""
         opinions = "\n".join(opinion for opinion in self.opinions)
         return dedent(
             f"""\
@@ -29,22 +31,35 @@ class Transcript(str):
         )
 
     def add_opinion(self, opinion: str) -> None:
+        """Add an opinion to the transcript."""
+        if not opinion or not isinstance(opinion, str):
+            return
         self.opinions.append(opinion)
 
     def __add__(self, other: str) -> "Transcript":
-        if not isinstance(other, str):
-            raise ValueError("Only can add string opinion to Transcript")
-
+        """Support adding string opinions with the + operator."""
         self.add_opinion(other)
         return self
+        
+    model_config = {
+        "arbitrary_types_allowed": True
+    }
 
 
-@dataclass
-class Meeting:
-    idea: str
-
-    def __post_init__(self) -> None:
-        """Create agents using application settings."""
+class Meeting(BaseModel):
+    """A meeting with executives to discuss an idea."""
+    
+    idea: str = Field(..., description="The idea to discuss")
+    smes: List[SME] = Field(default_factory=list, description="Subject matter experts in the meeting")
+    chairman: Optional[Chairman] = Field(None, description="Meeting chairman/facilitator")
+    refiner: Optional[IdeaRefiner] = Field(None, description="Idea refiner agent")
+    
+    model_config = {
+        "arbitrary_types_allowed": True
+    }
+    
+    def model_post_init(self, __context) -> None:
+        """Initialize agents using application settings."""
         # Configure the client
         client_config = AIClientConfig.from_settings(settings)
 

@@ -1,20 +1,31 @@
-from dataclasses import dataclass
 from typing import Optional
 
-from pydantic import SecretStr
+from pydantic import BaseModel, Field, SecretStr, model_validator
 
 from dream_team_gpt.config.settings import AIClientType, ModelName
 
 
-@dataclass
-class AIClientConfig:
+class AIClientConfig(BaseModel):
     """Configuration for AI clients."""
     
-    client_type: AIClientType
-    api_key: str
-    model: Optional[str] = ModelName.GPT4O.value
-    azure_endpoint: Optional[str] = None
-    azure_deployment: Optional[str] = None
+    client_type: AIClientType = Field(..., description="Type of AI client")
+    api_key: str = Field(..., description="API key for the service")
+    model: str = Field(ModelName.GPT4O.value, description="Model name to use")
+    azure_endpoint: Optional[str] = Field(None, description="Azure OpenAI endpoint")
+    azure_deployment: Optional[str] = Field(None, description="Azure OpenAI deployment name")
+    
+    @model_validator(mode='after')
+    def validate_azure_settings(self):
+        """Validate Azure-specific settings."""
+        if self.client_type == AIClientType.AzureOpenAI:
+            if not self.azure_endpoint or not self.azure_deployment:
+                missing = []
+                if not self.azure_endpoint:
+                    missing.append("azure_endpoint")
+                if not self.azure_deployment:
+                    missing.append("azure_deployment")
+                raise ValueError(f"When using Azure OpenAI, {', '.join(missing)} must be provided")
+        return self
     
     @classmethod
     def from_settings(cls, settings):
