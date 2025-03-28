@@ -1,2 +1,4 @@
-from .chairman import Chairman
-from .sme import SME
+from .chairman import Chairman as Chairman
+from .sme import SME as SME
+
+__all__ = ["SME", "Chairman"]

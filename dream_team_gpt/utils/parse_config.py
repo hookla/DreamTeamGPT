@@ -1,26 +1,35 @@
 from pathlib import Path
+from typing import Dict, List, Any
 
-from loguru import logger
 import yaml
+from loguru import logger
+from pydantic import ValidationError
+
+from dream_team_gpt.constants.sme_models import SMEConfig, SMETeam
 
 
-def parse_yaml_config(file_path: Path) -> list[dict]:
+def parse_yaml_config(file_path: Path) -> List[Dict[str, Any]]:
+    """Parse SME configuration from a YAML file."""
+    if not file_path:
+        logger.warning("No config file provided")
+        return []
+        
     logger.info(f"Loading SMEs config file: {file_path}")
-    data = read_yaml(file_path)
-
-    items = []
-    for item in data:
-        item_dict = {
-            "name": item["name"],
-            "expertise": item["expertise"],
-            "concerns": item["concerns"],
-        }
-        items.append(item_dict)
-
-    return items
-
-
-def read_yaml(file_path: Path) -> list[dict]:
-    with open(file_path, "r") as file:
-        data = yaml.safe_load(file)
-    return data
+    
+    try:
+        # Load raw YAML data
+        with open(file_path) as file:
+            data = yaml.safe_load(file)
+        
+        # Validate using Pydantic model
+        team = SMETeam.from_list(data)
+        
+        # Convert back to dict for backward compatibility
+        return [member.model_dump() for member in team.members]
+        
+    except ValidationError as e:
+        logger.error(f"Invalid SME configuration: {e}")
+        raise
+    except Exception as e:
+        logger.error(f"Error loading SME configuration: {e}")
+        raise

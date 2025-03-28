@@ -1,43 +1,49 @@
-from enum import Enum
-import json
-import time
+import os
 
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import AzureChatOpenAI, ChatOpenAI
 from loguru import logger
-import backoff
-import openai
 
 from .base import AIClient
 
-MAX_RETRIES = 6  # Number of retries
-RETRY_DELAY = 10  # Delay between retries in seconds
 
-
-class Models(str, Enum):
+class Models:
     GPT3 = "gpt-3.5-turbo"
     GPT4 = "gpt-4"
+    GPT4O = "gpt-4o"
 
 
 class GPTClient(AIClient):
-    def __init__(self, api_key: str, model: str = Models.GPT3):
-        openai.api_key = api_key
+    def __init__(self, api_key: str, model: str = Models.GPT4O) -> None:
         self._system_instructions = None
         self._user_prompt = None
         self.model = model
-        self.max_tokens = 100
         self.temperature: float = 0.1
-        # Log initial configuration on startup
-        logger.info(f"Initializing GPTClient with the following configuration:")
-        logger.info(f"Model: {self.model}")
-        logger.info(f"Max Tokens: {self.max_tokens}")
-        logger.info(f"Temperature: {self.temperature}")
+        self.api_key = api_key
+
+        # Azure OpenAI environment variables
+        self.azure_endpoint = os.environ.get("AZURE_OPENAI_ENDPOINT")
+        self.azure_deployment = os.environ.get("AZURE_OPENAI_DEPLOYMENT")
+
+        # Create a class variable to track if we've logged initialization info
+        if not hasattr(GPTClient, "_logged_init"):
+            # Log initial configuration on startup (only once)
+            logger.info("Initializing GPTClient with the following configuration:")
+            logger.info(f"Model: {self.model}")
+            logger.info(f"Temperature: {self.temperature}")
+            if self.azure_endpoint:
+                logger.info("Using Azure OpenAI endpoint")
+            # Mark that we've logged the initialization
+            GPTClient._logged_init = True
 
     @property
     def system_instructions(self) -> str:
         return self._system_instructions
 
     @system_instructions.setter
-    def system_instructions(self, value) -> None:
-        logger.debug(f"Setting system instructions: {self._system_instructions}")
+    def system_instructions(self, value: str) -> None:
+        logger.debug(f"Setting system instructions: {value}")
         self._system_instructions = value
 
     @property
@@ -46,7 +52,7 @@ class GPTClient(AIClient):
 
     @user_prompt.setter
     def user_prompt(self, value: str) -> None:
-        logger.debug(f"Setting user prompt: {self._user_prompt}")
+        logger.debug(f"Setting user prompt: {value}")
         self._user_prompt = value
 
     def query(self, transcript: str) -> str:
@@ -57,30 +63,43 @@ class GPTClient(AIClient):
             logger.error("self._user_prompt is None. Aborting the query.")
             raise RuntimeError("self._user_prompt is None, cannot proceed with query.")
 
-        return self._query(transcript)
+        # Create the appropriate LLM provider
+        if self.azure_endpoint and self.azure_deployment:
+            # Use Azure OpenAI
+            llm = AzureChatOpenAI(
+                azure_endpoint=self.azure_endpoint,
+                azure_deployment=self.azure_deployment,
+                api_key=self.api_key,
+                temperature=self.temperature,
+                api_version="2024-08-01-preview",
+            )
+            logger.info(f"Using Azure OpenAI with deployment {self.azure_deployment}")
+        else:
+            # Use regular OpenAI API
+            llm = ChatOpenAI(model=self.model, temperature=self.temperature, api_key=self.api_key)
+            logger.info(f"Using OpenAI API with model {self.model}")
 
-    @backoff.on_exception(
-        backoff.constant, openai.error.RateLimitError, max_tries=MAX_RETRIES, interval=RETRY_DELAY
-    )
-    def _query(self, transcript: str) -> str:
-        start_time = time.time()
+        # Create prompt template
         messages = [
-            {"role": "system", "content": self._system_instructions},
-            {"role": "user", "content": self._user_prompt},
-            {"role": "assistant", "content": transcript},
+            ("system", self._system_instructions),
+            ("user", self._user_prompt),
         ]
-        logger.info(json.dumps(messages, indent=4).replace("\\n", "\n"))
 
-        response = openai.ChatCompletion.create(
-            model=self.model,
-            temperature=self.temperature,
-            messages=messages,
-        )
+        # Add transcript as assistant message only if it's not empty
+        if transcript:
+            messages.append(("assistant", transcript))
 
-        elapsed_time = time.time() - start_time
+        prompt = ChatPromptTemplate.from_messages(messages)
 
-        # Log the time taken and token usage
+        # Create chain
+        chain = prompt | llm | StrOutputParser()
+
+        # Execute chain
+        start_time = __import__("time").time()
+        response = chain.invoke({})
+        elapsed_time = __import__("time").time() - start_time
+
+        # Log time taken
         logger.info(f"GPT query took {elapsed_time:.2f} seconds")
-        logger.info(f"Tokens used in the request: {response['usage']}")
 
-        return response.choices[0].message.content.strip()
+        return response.strip()
