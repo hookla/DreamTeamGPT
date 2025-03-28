@@ -1,7 +1,7 @@
+import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from textwrap import dedent
-import os
 
 from loguru import logger
 
@@ -15,7 +15,7 @@ from dream_team_gpt.utils import parse_yaml_config, print_with_wrap
 @dataclass
 class Transcript(str):
     idea: str
-    refined_idea: str = None
+    refined_idea: str | None = None
     opinions: list[str] = field(default_factory=list)
 
     def __str__(self) -> str:
@@ -24,7 +24,7 @@ class Transcript(str):
             f"""\
             We are here to discuss the following idea:
             {self.refined_idea if self.refined_idea else self.idea}
-            {opinions if opinions else ""}"""
+            {opinions if opinions else ""}""",
         )
 
     def add_opinion(self, opinion: str) -> None:
@@ -41,21 +41,32 @@ class Transcript(str):
 @dataclass
 class Meeting:
     idea: str
-    config: Path = None
+    config: Path | None = None
+    azure: bool = False
 
     def __post_init__(self) -> None:
         """Create agents"""
-        client_factory = ai_client_factory(
-            AIClientConfig(
-                client_type=AIClientType.ChatGPT,
-                model=Models.GPT4,
-                api_key=os.environ["openai.api_key"],
-            )
+        # Configure the client
+        client_type = AIClientType.AzureOpenAI if self.azure else AIClientType.ChatGPT
+        model = Models.GPT4O
+
+        client_config = AIClientConfig(
+            client_type=client_type,
+            model=model,
+            api_key=os.environ["OPENAI_API_KEY"],
         )
-        if self.config:
-            sme_dict = parse_yaml_config(self.config)
-        else:
-            sme_dict = DEFAULT_SME_DICT
+
+        # Add Azure-specific configuration if needed
+        if self.azure:
+            client_config.azure_endpoint = os.environ.get("AZURE_OPENAI_ENDPOINT")
+            client_config.azure_deployment = os.environ.get("AZURE_OPENAI_DEPLOYMENT")
+
+        # Create client factory
+        client_factory = ai_client_factory(client_config)
+
+        # Initialize agents with the configured client
+        sme_dict = parse_yaml_config(self.config) if self.config else DEFAULT_SME_DICT
+
         self.smes = [SME(client_factory=client_factory, **d) for d in sme_dict]
         self.chairman = Chairman(client_factory, self.smes)
         self.refiner = IdeaRefiner(client_factory, "Refiner")
@@ -70,10 +81,10 @@ class Meeting:
         while not self.chairman.decide_if_meeting_over(transcript):
             self.run_discussion_round(transcript)
 
-    def run_discussion_round(self, transcript: str) -> None:
+    def run_discussion_round(self, transcript: Transcript) -> None:
         logger.info("running next discussion round\n")
         speaker: SME = self.chairman.decide_next_speaker(transcript)
         opinion = speaker.opinion(transcript)
         print_with_wrap(f"\033[94m{speaker.name}\033[0m: {opinion}\n")
         if opinion.strip().rstrip(".").upper() != NO_COMMENT:
-            transcript += opinion
+            transcript.add_opinion(f"{speaker.name}: {opinion}")

@@ -11,18 +11,17 @@ python = ">=3.11,<4.0"
 backoff = "^2.2.1"
 click = "~=8.1.7"
 loguru = "~=0.7.2"
-openai = "~=0.28.1"
 python-dotenv = "~=1.0.0"
 pyyaml = "~=6.0.1"
-tiktoken = "~=0.5.1"
+langchain = "^0.3.21"
+langchain-openai = "^0.3.11"
 
 [tool.poetry.group.dev.dependencies]
-black = "*"
-isort = "*"
-mypy = "^1.5.1"
 pre-commit = "^3.4.0"
 pytest = "*"
 pytest-cov = "^4.0.0"
+ruff = "^0.11.2"
+pyright = "^1.1.398"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.4.2"
@@ -33,26 +32,25 @@ mkdocstrings = {extras = ["python"], version = "^0.23.0"}
 requires = ["poetry-core>=1.4.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.black]
+[tool.ruff]
 line-length = 99
-target-version = ['py311']
+target-version = "py311"
+src = ["dream_team_gpt", "tests"]
+fix = true
 
-[tool.isort]
-profile = "black"
-line_length = 99
-force_grid_wrap = 0
-from_first = true
-include_trailing_comma = true
-use_parentheses = true
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "N", "ANN", "COM", "C90", "ERA", "RET", "SIM", "TID", "ARG", "RUF"]
+ignore = ["COM812"]
 
-[tool.mypy]
-check_untyped_defs = true
-disallow_any_unimported = true
-disallow_untyped_defs = true
-show_error_codes = true
-warn_return_any = true
-warn_unused_ignores = true
-python_version = 3.11
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.pyright]
+include = ["dream_team_gpt", "tests"]
+exclude = ["**/__pycache__"]
+typeCheckingMode = "strict"
 
 [tool.pytest.ini_options]
 testpaths = "tests"

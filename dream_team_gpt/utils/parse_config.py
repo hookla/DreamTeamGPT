@@ -1,14 +1,15 @@
 from pathlib import Path
+from typing import Any
 
-from loguru import logger
 import yaml
+from loguru import logger
 
 
-def parse_yaml_config(file_path: Path) -> list[dict]:
+def parse_yaml_config(file_path: Path) -> list[dict[str, Any]]:
     logger.info(f"Loading SMEs config file: {file_path}")
     data = read_yaml(file_path)
 
-    items = []
+    items: list[dict[str, Any]] = []
     for item in data:
         item_dict = {
             "name": item["name"],
@@ -20,7 +21,6 @@ def parse_yaml_config(file_path: Path) -> list[dict]:
     return items
 
 
-def read_yaml(file_path: Path) -> list[dict]:
-    with open(file_path, "r") as file:
-        data = yaml.safe_load(file)
-    return data
+def read_yaml(file_path: Path) -> list[dict[str, Any]]:
+    with open(file_path) as file:
+        return yaml.safe_load(file)

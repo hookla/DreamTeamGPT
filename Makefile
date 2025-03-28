@@ -1,31 +1,31 @@
-.PHONY: fmt check style verify tests
-fmt: ## Format code with isort and blace
-	@echo "🚀 Formatting code: Running isort"
-	@poetry run isort .
-	@echo "🚀 Formatting code: Running black"
-	@poetry run black .
+.PHONY: fmt check style verify test help
 
-check: ## Run code quality tools.
+fmt: ## Format code with ruff
+	@echo "🚀 Formatting code: Running ruff format"
+	@poetry run ruff format .
+	@echo "🚀 Running linter auto-fixes: Running ruff check"
+	@poetry run ruff check .
+
+check: ## Run code quality tools
 	@echo "🚀 Checking Poetry lock file consistency with 'pyproject.toml': Running poetry lock --check"
 	@poetry check --lock
-	@echo "🚀 Static type checking: Running mypy -p dream_team_gpt"
-	@poetry run mypy -p dream_team_gpt
+	@echo "🚀 Static type checking: Running pyright"
+	@poetry run pyright
 
-style: ## Run code style checks.
-	@echo "🚀 Checking code formatting with isort: Running isort --check --diff ."
-	@poetry run isort --check --diff .
-	@echo "🚀 Checking code formatting with black: Running black --check --diff ."
-	@poetry run black --check --diff .
-
+style: ## Run code style checks
+	@echo "🚀 Checking code with ruff linter: Running ruff check"
+	@poetry run ruff check .
+	@echo "🚀 Checking code formatting with ruff: Running ruff format --check"
+	@poetry run ruff format --check .
 
 test: ## Test the code with pytest
 	@echo "🚀 Testing code: Running pytest"
 	@poetry run pytest tests/
 
-verify: ## Run style and tests
-	check
-	style
-	tests
+verify: ## Run check, style, and tests
+	make check
+	make style
+	make test
 
 .PHONY: help
 help:

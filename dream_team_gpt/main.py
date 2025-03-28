@@ -1,9 +1,7 @@
-from dataclasses import dataclass
 from pathlib import Path
-import os
 
-from dotenv import load_dotenv
 import click
+from dotenv import load_dotenv
 
 from dream_team_gpt.meeting import Meeting
 from dream_team_gpt.utils import configure_logging
@@ -24,13 +22,21 @@ from dream_team_gpt.utils import configure_logging
     default=None,
     help="yaml file with team personalities details",
 )
+@click.option(
+    "--azure",
+    is_flag=True,
+    default=False,
+    help="use Azure OpenAI instead of OpenAI API",
+)
 @click.option("-v", "--verbose", default=1, count=True)
-def run_meeting(idea: str, config: Path = None, verbose: int = 1) -> None:
+def run_meeting(
+    idea: str, config: Path | None = None, azure: bool = False, verbose: int = 1
+) -> None:
     print(idea)
     configure_logging(verbose)
     load_dotenv()
 
-    Meeting(idea, config).run()
+    Meeting(idea, config, azure).run()
 
 
 if __name__ == "__main__":
