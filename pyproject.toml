@@ -26,26 +26,25 @@ dependencies = [
 repository = "https://github.com/hookla/DreamTeamGPT"
 documentation = "https://github.com/hookla/DreamTeamGPT#readme"
 
-# Keep minimal Poetry configuration for compatibility
-[tool.poetry]
-name = "dream_team_gpt"
-version = "0.0.1"
-
-[tool.poetry.dependencies]
-python = ">=3.11,<4.0"
-# Dependencies now managed in [project.dependencies]
+# Development dependencies
+[tool.poetry.group.dev]
+optional = true
 
 [tool.poetry.group.dev.dependencies]
-pre-commit = "^3.4.0"
-pytest = "*"
-pytest-cov = "^4.0.0"
-ruff = "^0.11.2"
-pyright = "^1.1.398"
+pre-commit = ">=3.4.0,<4.0.0"
+pytest = ">=7.0.0,<8.0.0"
+pytest-cov = ">=4.0.0,<5.0.0"
+ruff = ">=0.11.2,<0.12.0"
+pyright = ">=1.1.398,<2.0.0"
+
+# Documentation dependencies
+[tool.poetry.group.docs]
+optional = true
 
 [tool.poetry.group.docs.dependencies]
-mkdocs = "^1.4.2"
-mkdocs-material = "^9.2.7"
-mkdocstrings = {extras = ["python"], version = "^0.23.0"}
+mkdocs = ">=1.4.2,<2.0.0"
+mkdocs-material = ">=9.2.7,<10.0.0"
+mkdocstrings = {extras = ["python"], version = ">=0.23.0,<0.24.0"}
 
 [tool.ruff]
 line-length = 99
