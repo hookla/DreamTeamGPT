@@ -1,6 +1,5 @@
 from collections.abc import Callable
 from textwrap import dedent
-from typing import Any
 
 from dream_team_gpt.clients.base import AIClient
 from dream_team_gpt.constants import NO_COMMENT

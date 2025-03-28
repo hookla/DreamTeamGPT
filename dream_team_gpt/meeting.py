@@ -1,13 +1,14 @@
-import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from textwrap import dedent
+from typing import List
 
 from loguru import logger
 
 from dream_team_gpt.agents import SME, Chairman
 from dream_team_gpt.agents.idea_refiner import IdeaRefiner
-from dream_team_gpt.clients import AIClientConfig, AIClientType, Models, ai_client_factory
+from dream_team_gpt.clients import AIClientConfig, ai_client_factory
+from dream_team_gpt.config import settings
 from dream_team_gpt.constants import DEFAULT_SME_DICT, NO_COMMENT
 from dream_team_gpt.utils import parse_yaml_config, print_with_wrap
 
@@ -41,31 +42,17 @@ class Transcript(str):
 @dataclass
 class Meeting:
     idea: str
-    config: Path | None = None
-    azure: bool = False
 
     def __post_init__(self) -> None:
-        """Create agents"""
+        """Create agents using application settings."""
         # Configure the client
-        client_type = AIClientType.AzureOpenAI if self.azure else AIClientType.ChatGPT
-        model = Models.GPT4O
-
-        client_config = AIClientConfig(
-            client_type=client_type,
-            model=model,
-            api_key=os.environ["OPENAI_API_KEY"],
-        )
-
-        # Add Azure-specific configuration if needed
-        if self.azure:
-            client_config.azure_endpoint = os.environ.get("AZURE_OPENAI_ENDPOINT")
-            client_config.azure_deployment = os.environ.get("AZURE_OPENAI_DEPLOYMENT")
+        client_config = AIClientConfig.from_settings(settings)
 
         # Create client factory
         client_factory = ai_client_factory(client_config)
 
         # Initialize agents with the configured client
-        sme_dict = parse_yaml_config(self.config) if self.config else DEFAULT_SME_DICT
+        sme_dict = parse_yaml_config(settings.sme_config_path) if settings.sme_config_path else DEFAULT_SME_DICT
 
         self.smes = [SME(client_factory=client_factory, **d) for d in sme_dict]
         self.chairman = Chairman(client_factory, self.smes)

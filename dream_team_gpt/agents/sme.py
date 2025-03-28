@@ -1,6 +1,5 @@
 from collections.abc import Callable
 from textwrap import dedent
-from typing import Any
 
 from dream_team_gpt.agents.agent import Agent
 from dream_team_gpt.clients.base import AIClient
@@ -24,14 +23,14 @@ USER_PROMPT_TEMPLATE = dedent(
 
 class SME(Agent):
     def __init__(
-        self, 
-        client_factory: Callable[..., AIClient], 
-        name: str, 
-        expertise: str, 
+        self,
+        client_factory: Callable[..., AIClient],
+        name: str,
+        expertise: str,
         concerns: list[str],
         personality: str = "Professional",
         industry_focus: str = "Financial services",
-        **kwargs: Any
+        **_: object,  # Catch any extra arguments but don't use them
     ) -> None:
         # Construct the user_prompt string
         user_prompt = USER_PROMPT_TEMPLATE.format(

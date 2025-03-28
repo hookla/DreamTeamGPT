@@ -1,4 +1,4 @@
-from typing import Any, List, Dict
+from typing import Any
 
 DEFAULT_SME_DICT: list[dict[str, Any]] = [
     {
