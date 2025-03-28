@@ -58,7 +58,12 @@ class Meeting(BaseModel):
         "arbitrary_types_allowed": True
     }
     
-    def model_post_init(self, __context) -> None:
+    def __init__(self, idea: str, **data) -> None:
+        """Initialize with idea parameter."""
+        super().__init__(idea=idea, **data)
+        self._setup_agents()
+        
+    def _setup_agents(self) -> None:
         """Initialize agents using application settings."""
         # Configure the client
         client_config = AIClientConfig.from_settings(settings)
@@ -75,18 +80,19 @@ class Meeting(BaseModel):
 
     def run(self) -> None:
         """Run the meeting to discuss the idea"""
-        transcript = Transcript(self.idea)
-        print_with_wrap(transcript)
+        transcript = Transcript(idea=self.idea)
+        print_with_wrap(str(transcript))
         refined_idea = self.refiner.refine_idea(self.idea)
         transcript.refined_idea = refined_idea
         print_with_wrap(refined_idea)
-        while not self.chairman.decide_if_meeting_over(transcript):
+        while not self.chairman.decide_if_meeting_over(str(transcript)):
             self.run_discussion_round(transcript)
 
     def run_discussion_round(self, transcript: Transcript) -> None:
+        """Run a single round of discussion with one speaker."""
         logger.info("running next discussion round\n")
-        speaker: SME = self.chairman.decide_next_speaker(transcript)
-        opinion = speaker.opinion(transcript)
+        speaker: SME = self.chairman.decide_next_speaker(str(transcript))
+        opinion = speaker.opinion(str(transcript))
         print_with_wrap(f"\033[94m{speaker.name}\033[0m: {opinion}\n")
         if opinion.strip().rstrip(".").upper() != NO_COMMENT:
             transcript.add_opinion(f"{speaker.name}: {opinion}")
